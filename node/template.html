@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		
+
+		<script type="text/javascript" src="script/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+
+		<script type="text/javascript" src="script/data.js"></script>
+		<script type="text/javascript" src="script/grid.js"></script>
+		<script type="text/javascript" src="script/main.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="style/main.css">
+	</head>
+	<body>
+		<div id="header">
+			<div id="title">Michael Kreil - aggregated facts, projects, awards, ...</div>
+			<div id="filters">
+				<div class="btn-group" id="filterButtons">
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn btn-mini btn-inverse" id="btnActivateAll">all</button>
+					<button type="button" class="btn btn-mini btn-inverse" id="btnActivateKeyFacts">cv</button>
+					<button type="button" class="btn btn-mini btn-inverse" id="btnActivateNone">none</button>
+				</div>
+			</div>
+		</div>
+		<div id="content">
+		<%
+			function getMonthNameDE(month) {
+				return ['','Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][month];
+			}
+
+			function getMonthNameEN(month) {
+				return ['','January','February','March','April','May','June','July','August','September','October','November','December'][month];
+			}
+
+			var lastYear, lastMonth;
+
+			for (var i = 0; i < list.length; i++) {
+				var entry = list[i];
+
+				if (lastYear && lastYear != entry.yearStart) {
+					if (lastMonth) {
+						%><h3><%= getMonthNameEN(lastMonth) %></h3><%
+					}
+					%><h2><%= lastYear %></h2><%
+				} else if (lastMonth && lastMonth != entry.monthStart) {
+					%><h3><%= getMonthNameEN(lastMonth) %></h3><%
+				}
+				lastYear = entry.yearStart;
+				lastMonth = entry.monthStart;
+
+				%>
+					<div class="entry category-<%=entry.category%> type-<%=entry.type%>">
+						<div class="icon"></div>
+						<div class="title"><%=entry.titleDE%></div>
+						<div class="date"><%=entry.dateDE%></div>
+						<div class="description"><%=entry.descriptionDE%></div>
+					</div>
+				<%
+			}
+		%>
+		</div>
+	</body>
+</html>
