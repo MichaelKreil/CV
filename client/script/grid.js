@@ -148,7 +148,7 @@ function redraw(listNode) {
 				listNode.append($('<div class="categoryHeader">' + categoryColors[category]['title'+langSuffix] + '</div>').css({
 					top:y,
 					left:x,
-					color: 'rgb('+mixColor(color, 0.5, 255).join(',')+')'
+					color: 'rgb('+mixColor(color, 0.2, 255).join(',')+')'
 				}));
 
 				colHeight += 40;
