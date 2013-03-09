@@ -67,9 +67,12 @@ for (var i = 0; i < data.length; i++) {
 	if (obj.linkDE        == '') obj.linkDE        = obj.linkEN;
 
 	checkQuotes(obj, 'titleDE',       '&bdquo;', '&ldquo;');
-	checkQuotes(obj, 'descriptionDE', '&bdquo;', '&ldquo;');
 	checkQuotes(obj, 'titleEN',       '&ldquo;', '&rdquo;');
+	checkQuotes(obj, 'descriptionDE', '&bdquo;', '&ldquo;');
 	checkQuotes(obj, 'descriptionEN', '&ldquo;', '&rdquo;');
+
+	checkLinks(obj, 'descriptionDE');
+	checkLinks(obj, 'descriptionEN');
 
 
 	list.push(obj);
@@ -151,3 +154,9 @@ function checkQuotes(object, field, quoteChar1, quoteChar2) {
 	}
 }
 
+function checkLinks(object, field) {
+	object[field] = object[field].replace(/http[s]?\:\/\/[^\s\<\)]*/g, function (url) {
+		// console.log(url);
+		return '<a href="'+url+'">'+url+'</a>';
+	})
+}
