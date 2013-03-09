@@ -301,18 +301,19 @@ function hideEntry(entry) {
 }
 
 function shortenLink(url) {
+	/*
 	if (url.toLowerCase().substr(0,7) == 'http://') url = url.substr(7);
 	if (url.toLowerCase().substr(0,8) == 'https://') url = url.substr(8);
 
 	var shortend = false;
-	while (url.length > 45) {
+	while (url.length > 40) {
 		var index = Math.max(url.lastIndexOf('_'), url.lastIndexOf('/'));
 		url = url.substr(0, index);
 		shortend = true;
 	}
 
 	if (shortend) url += '&hellip;';
-
+*/
 	return url;
 }
 

@@ -155,7 +155,7 @@ body {
 		.entry .title {
 			clear: both;
 			padding-top: 5px;
-			font-size: 16px;
+			font-size: 14px;
 			font-weight: bold;
 			line-height: 1.4em;
 		}
@@ -182,6 +182,10 @@ body {
 			word-wrap: break-word;
 		}
 
+		.entry a {
+			word-break: break-all;
+		}
+
 			.entry .description cite {
 				font-style: italic;
 				display: block;
@@ -206,15 +210,12 @@ body {
 			line-height: 1em;
 			display: none;
 			word-wrap: break-word;
+
 		}
 
 		.entry a {
-			text-decoration: none;
-			color: inherit;
-		}
-
-		.entry a:hover {
 			text-decoration: underline;
+			color: inherit;
 		}
 
 		.entry .clickable {
