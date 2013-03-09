@@ -4,15 +4,17 @@ var catHash = {};
 var catList = [];
 var col2cats = [];
 var cat2col = {};
+var entries = [];
 
 function initData() {
 	for (var i = 0; i < data.length; i++) {
-		data[i].start = new Date(data[i].start);
+		entries.push(new Entry(data[i]));
 	}
 
 	// Get used categories
-	for (var i = 0; i < data.length; i++) {
-		var entry = data[i];
+	for (var i = 0; i < entries.length; i++) {
+		var entry = entries[i];
+
 		var cat = entry.category;
 		if (catHash[cat] === undefined) {
 			catHash[cat] = {
@@ -81,13 +83,13 @@ function redraw(listNode) {
 	listNode.empty();
 
 	drawList = [];
-	for (var i = 0; i < data.length; i++) {
-		var entry = data[i];
-		if (isEntryVisible(entry)) {
-			showEntry(entry, listNode);
+	for (var i = 0; i < entries.length; i++) {
+		var entry = entries[i];
+		if (entry.isVisible()) {
+			entry.show();
 			drawList.push(entry);
 		} else {
-			hideEntry(entry);
+			entry.hide();
 		}
 	}
 
@@ -155,11 +157,7 @@ function redraw(listNode) {
 				y += 40;
 			}
 
-
-			entry.node.css({
-				top:  y,
-				left: x
-			});
+			entry.setPosition(x,y);
 
 			var catInfo = catList[catHash[category]];
 			
@@ -172,7 +170,7 @@ function redraw(listNode) {
 			if (catInfo.maxX < x) catInfo.maxX = x;
 			if (catInfo.maxY < y) catInfo.maxY = y;
 
-			entry.node.css(getEntryCSS(color));
+			entry.setColor(color);
 
 			colHeight += entry.nodeHeight + 10;
 			columnHeights[colId] = colHeight;
@@ -219,18 +217,10 @@ function redraw(listNode) {
 
 }
 
-//ToDo
-function isEntryVisible(entry) {
-	var active = activeCategories[entry.type]
-	if (active === undefined) console.error('Unknown type "'+entry.type+'"');
-	return active;
-	//return entry.type == 'award'
-}
-
 function splitDrawList(list, field) {
 	var result = [];
 	for (var i = 0; i < list.length; i++) {
-		if (list[i].block.length > 3) {
+		if (list[i].block.length > 1) {
 			var subBlockEntries = {};
 			var subBlockIds = [];
 			var block = list[i].block;
@@ -257,47 +247,6 @@ function splitDrawList(list, field) {
 		}
 	}
 	return result;
-}
-
-function showEntry(entry, list) {
-	//if (entry.node === undefined) {
-		var html = '';
-
-		html += '<div class="type clickable">' + entry.type + '</div>';
-		html += '<div class="date">' + entry['date'+langSuffix] + '</div>';
-		html += '<div class="title clickable">' + entry['title'+langSuffix] + '</div>';
-		
-		var description = entry['description'+langSuffix];
-		if (description !== '') {
-			html += '<div class="description clickable">' + description + '</div>';
-		}
-
-		var link = entry['link'+langSuffix];
-		if (link !== '') {
-			html += '<div class="link"><a href="' + link + '" target="_blank">' + shortenLink(link) + '</a></div>';
-		}
-
-		html = '<div class="entry category-' + entry.category + ' type-' + entry.type + '">' + html + '</div>';
-		
-		entry.node = $(html);
-
-		entry.node.children('.title').click(function () {
-			$('.entry').removeClass('open');
-			entry.node.addClass('open');
-		})
-
-		list.append(entry.node);
-
-		entry.nodeHeight = entry.node.outerHeight();
-		entry.node.css({'position':'absolute'});
-	/*}
-
-	entry.node.show();
-	*/
-}
-
-function hideEntry(entry) {
-	//if (entry.node) entry.node.hide();
 }
 
 function shortenLink(url) {
@@ -339,4 +288,79 @@ function getMonthName(month) {
 	//return ['','Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][month];
 	return ['','January','February','March','April','May','June','July','August','September','October','November','December'][month];
 	//return ['','Jan.','Feb.','März','April','Mai','Juni','Juli','Aug.','Sep.','Okt.','Nov.','Dez.'][month];
+}
+
+function Entry(data) {
+	var me = this;
+	
+	me.category = data.category;
+
+	me.start      = new Date(data.start);
+	me.end        = new Date(data.end);
+	me.category   = data.category;
+	me.yearStart  = data.yearStart;
+	me.monthStart = data.monthStart;
+
+	var
+		node,
+		title =       data['title'      +langSuffix],
+		dateText =    data['date'       +langSuffix],
+		description = data['description'+langSuffix],
+		link =        data['link'       +langSuffix];
+
+	var html = '';
+
+	html += '<div class="type clickable">' + data.type + '</div>';
+	html += '<div class="date">' + dateText + '</div>';
+	html += '<div class="title clickable">' + title + '</div>';
+	
+	if (description !== '') {
+		html += '<div class="description clickable">' + description + '</div>';
+	}
+
+	if (link !== '') {
+		html += '<div class="link"><a href="' + link + '" target="_blank">' + shortenLink(link) + '</a></div>';
+	}
+
+	html = '<div class="entry category-' + data.category + ' type-' + data.type + '">' + html + '</div>';
+
+
+	me.hide = function () {
+
+	}
+
+	me.isVisible = function () {
+		var active = activeCategories[data.type]
+		if (active === undefined) console.error('Unknown type "'+data.type+'"');
+		return active;
+	}
+
+	me.setColor = function (color) {
+
+		node.css(getEntryCSS(color));
+	}
+
+	me.setPosition = function (x, y) {
+		node.css({
+			top:  y,
+			left: x
+		});
+	}
+
+	me.show = function () {
+		node = $(html);
+
+		node.children('.title').click(function () {
+			$('.entry').removeClass('open');
+			node.addClass('open');
+		})
+
+		listNode.append(node);
+
+		me.nodeHeight = node.outerHeight();
+		node.css({'position':'absolute'});
+	}
+
+
+	return me;
 }
