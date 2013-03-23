@@ -194,14 +194,6 @@ function mixColor(color, mix, background) {
 	]
 }
 
-function getEntryCSS(color) {
-	return {
-		'background-color': 'rgb('+mixColor(color, 0.8, 255).join(',')+')',
-		'border-color':     'rgb('+mixColor(color, 0.6, 255).join(',')+')',
-		'color':            'rgb('+mixColor(color, 0.5,   0).join(',')+')'
-	}
-}
-
 
 
 function getMonthName(month) {
@@ -279,6 +271,15 @@ function Entry(data) {
 
 		me.nodeHeight = node.outerHeight();
 		node.css({'position':'absolute'});
+	}
+
+
+	function getEntryCSS(color) {
+		return {
+			'background-color': 'rgb('+mixColor(color, 0.8, 255).join(',')+')',
+			'border-color':     'rgb('+mixColor(color, 0.6, 255).join(',')+')',
+			'color':            'rgb('+mixColor(color, 0.5,   0).join(',')+')'
+		}
 	}
 
 
