@@ -186,23 +186,6 @@ function splitDrawList(list, field) {
 	return result;
 }
 
-function shortenLink(url) {
-	/*
-	if (url.toLowerCase().substr(0,7) == 'http://') url = url.substr(7);
-	if (url.toLowerCase().substr(0,8) == 'https://') url = url.substr(8);
-
-	var shortend = false;
-	while (url.length > 40) {
-		var index = Math.max(url.lastIndexOf('_'), url.lastIndexOf('/'));
-		url = url.substr(0, index);
-		shortend = true;
-	}
-
-	if (shortend) url += '&hellip;';
-*/
-	return url;
-}
-
 function mixColor(color, mix, background) {
 	return [
 		Math.round(color[0]*(1-mix) + mix*background),
@@ -256,7 +239,7 @@ function Entry(data) {
 	}
 
 	if (link !== '') {
-		html += '<div class="link"><a href="' + link + '" target="_blank">' + shortenLink(link) + '</a></div>';
+		html += '<div class="link"><a href="' + link + '" target="_blank">' + link + '</a></div>';
 	}
 
 	html = '<div class="entry category-' + data.category + ' type-' + data.type + '">' + html + '</div>';
