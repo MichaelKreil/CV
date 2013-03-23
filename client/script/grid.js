@@ -119,20 +119,6 @@ function redraw(listNode) {
 		}
 
 		y0 += maxHeight;
-		/*
-
-		if (lastHeaders[0] != headers[0]) {
-			listNode.append($('<h2>'+headers[0]+'</h2>').css({top:y0}));
-			y0 += 80;
-		}
-
-		if ((headers[1] !== undefined) && ((lastHeaders[0] != headers[0]) || (lastHeaders[1] != headers[1]))) {
-			listNode.append($('<h3>'+getMonthName(headers[1])+'</h3>').css({top:y0}));
-			y0 += 70;
-		}
-
-		lastHeaders = headers;
-		*/
 	}
 
 	for (var i = 0; i < col2cats.length; i++) {
