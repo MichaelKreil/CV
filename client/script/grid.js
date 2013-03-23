@@ -6,77 +6,14 @@ var col2cats = [];
 var cat2col = {};
 var entries = [];
 
+var layout;
+
 function initData() {
 	for (var i = 0; i < data.length; i++) {
 		entries.push(new Entry(data[i]));
 	}
 
-	// Get used categories
-	for (var i = 0; i < entries.length; i++) {
-		var entry = entries[i];
-
-		var cat = entry.category;
-		if (catHash[cat] === undefined) {
-			catHash[cat] = {
-				category:cat,
-				minDate:entry.start,
-				maxDate:entry.start,
-				minX:  1e10,
-				maxX: -1e10,
-				minY:  1e10,
-				maxY: -1e10
-			};
-		}
-		if (catHash[cat].minDate > entry.start) catHash[cat].minDate = entry.start;
-		if (catHash[cat].maxDate < entry.start) catHash[cat].maxDate = entry.start;
-	}
-
-	for (var cat in catHash) catList.push(catHash[cat]);
-
-	// sort categories by min date
-	catList.sort(function (a, b) {
-		return a.minDate - b.minDate;
-	});
-
-	// prepare columns
-	for (var i = 0; i < catList.length; i++) {
-		col2cats[i] = {cats:[i], minDate:catList[i].minDate, maxDate:catList[i].maxDate};
-		catHash[catList[i].category] = i;
-	}
-
-	// merge multiple categories into columns
-	do {
-		var found = false;
-		var minDistance = 1e20;
-		var index1, index2;
-
-		for (var i1 = 0; i1 < col2cats.length; i1++) {
-			var cat1 = col2cats[i1];
-			for (var i2 = 0; i2 < col2cats.length; i2++) if (i1 != i2) {
-				var cat2 = col2cats[i2];
-				var distance = cat2.minDate - cat1.maxDate;
-				if ((distance > 0) && (distance < minDistance)) {
-					minDistance = distance;
-					index1 = i1;
-					index2 = i2;
-					found = true;
-				}
-			}
-		}
-
-		if (found) {
-			col2cats[index1].maxDate = col2cats[index2].maxDate;
-			col2cats[index1].cats = col2cats[index1].cats.concat(col2cats[index2].cats);
-			col2cats.splice(index2, 1);
-		}
-	} while (found);
-
-	for (var i = 0; i < col2cats.length; i++) {
-		var cats = col2cats[i].cats;
-		for (var j = 0; j < cats.length; j++) {
-			cat2col[catList[cats[j]].category] = i;
-		}
-	}
+	layout = new Layout();
 }
 
 function redraw(listNode) {
@@ -364,3 +301,79 @@ function Entry(data) {
 
 	return me;
 }
+
+function Layout () {
+	var me = this;
+
+
+
+	// Get used categories
+	for (var i = 0; i < entries.length; i++) {
+		var entry = entries[i];
+
+		var cat = entry.category;
+		if (catHash[cat] === undefined) {
+			catHash[cat] = {
+				category:cat,
+				minDate:entry.start,
+				maxDate:entry.start,
+				minX:  1e10,
+				maxX: -1e10,
+				minY:  1e10,
+				maxY: -1e10
+			};
+		}
+		if (catHash[cat].minDate > entry.start) catHash[cat].minDate = entry.start;
+		if (catHash[cat].maxDate < entry.start) catHash[cat].maxDate = entry.start;
+	}
+
+	for (var cat in catHash) catList.push(catHash[cat]);
+
+	// sort categories by min date
+	catList.sort(function (a, b) {
+		return a.minDate - b.minDate;
+	});
+
+	// prepare columns
+	for (var i = 0; i < catList.length; i++) {
+		col2cats[i] = {cats:[i], minDate:catList[i].minDate, maxDate:catList[i].maxDate};
+		catHash[catList[i].category] = i;
+	}
+
+	// merge multiple categories into columns
+	do {
+		var found = false;
+		var minDistance = 1e20;
+		var index1, index2;
+
+		for (var i1 = 0; i1 < col2cats.length; i1++) {
+			var cat1 = col2cats[i1];
+			for (var i2 = 0; i2 < col2cats.length; i2++) if (i1 != i2) {
+				var cat2 = col2cats[i2];
+				var distance = cat2.minDate - cat1.maxDate;
+				if ((distance > 0) && (distance < minDistance)) {
+					minDistance = distance;
+					index1 = i1;
+					index2 = i2;
+					found = true;
+				}
+			}
+		}
+
+		if (found) {
+			col2cats[index1].maxDate = col2cats[index2].maxDate;
+			col2cats[index1].cats = col2cats[index1].cats.concat(col2cats[index2].cats);
+			col2cats.splice(index2, 1);
+		}
+	} while (found);
+
+	for (var i = 0; i < col2cats.length; i++) {
+		var cats = col2cats[i].cats;
+		for (var j = 0; j < cats.length; j++) {
+			cat2col[catList[cats[j]].category] = i;
+		}
+	}
+
+	return me;
+}
+
